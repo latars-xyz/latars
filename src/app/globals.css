@@ -1,0 +1,206 @@
+@import "tailwindcss";
+@import "@fontsource-variable/outfit";
+
+@theme {
+  --font-sans: "Outfit Variable", ui-sans-serif, system-ui, sans-serif;
+  --color-ink: #1e1f26;
+  --color-muted: #5f6170;
+  --color-line: #eadfd3;
+  --color-canvas: #fff8f1;
+  --color-surface: #ffffff;
+  --color-flame: #e8502a; /* Moonshot 2026 orange */
+  --color-flame-700: #c23f1c; /* AA-contrast variant for text & buttons */
+  --color-sun: #f6a821; /* Moonshot 2026 gold */
+  --color-sun-100: #fff0d3;
+  --color-flame-50: #fff0ea;
+}
+
+body {
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-flame-700);
+  outline-offset: 2px;
+}
+
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Moments: tiles rise in gently as the gallery loads (skipped when reduced motion is preferred). */
+@keyframes moment-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes moment-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .moment-rise {
+    animation: moment-rise 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+  .moment-fade {
+    animation: moment-fade 0.25s ease-out both;
+  }
+}
+
+/* Pages that opt into the dark look (Moments) get a matching header and footer. */
+body:has([data-dark-page]) {
+  background: #121116;
+}
+body:has([data-dark-page]) .site-header {
+  background: rgb(18 17 22 / 0.8);
+  border-color: rgb(255 255 255 / 0.08);
+  color: #fff;
+}
+body:has([data-dark-page]) .site-header .text-muted {
+  color: rgb(255 255 255 / 0.6);
+}
+body:has([data-dark-page]) .site-header .text-muted:hover {
+  color: #fff;
+}
+body:has([data-dark-page]) .site-header .bg-ink {
+  background: rgb(255 255 255 / 0.12);
+}
+body:has([data-dark-page]) .site-footer {
+  color: rgb(255 255 255 / 0.45);
+}
+body:has([data-dark-page]) .site-footer p {
+  border-color: rgb(255 255 255 / 0.08);
+}
+
+/* Moments in motion: a drifting film strip, a slow pan on the featured photo, tiles rising in on scroll. */
+@keyframes film-drift {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+@keyframes ken-burns {
+  from {
+    transform: scale(1.02) translate(0, 0);
+  }
+  to {
+    transform: scale(1.14) translate(-2%, -3%);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .film-row {
+    animation: film-drift 40s linear infinite;
+  }
+  .film-row-reverse {
+    animation-direction: reverse;
+  }
+  .film-strip:hover .film-row,
+  .film-strip:focus-within .film-row {
+    animation-play-state: paused;
+  }
+  .ken-burns {
+    animation: ken-burns 22s ease-in-out infinite alternate;
+  }
+  [data-reveal] {
+    transition:
+      opacity 0.7s cubic-bezier(0.2, 0.7, 0.2, 1),
+      transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .motion-ready > [data-reveal]:not(.in) {
+    opacity: 0;
+    transform: translateY(28px) scale(0.97);
+  }
+}
+/* Without motion the strip is a plain row people can swipe through. */
+@media (prefers-reduced-motion: reduce) {
+  .film-strip {
+    overflow-x: auto;
+  }
+}
+
+/* Featured slideshow: the bar for the current slide fills over its time on screen. */
+@keyframes featured-progress {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+.featured-progress {
+  animation: featured-progress linear both;
+}
+
+/* Reactions: emoji float up and fade when you react; the button's emoji gives a little bounce. */
+@keyframes react-float {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.6);
+  }
+  15% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(calc(-50% + var(--dx, 0px)), -220px) scale(1.35);
+  }
+}
+@keyframes react-bump {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.45);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+.react-float {
+  animation: react-float 1.1s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.react-bump {
+  animation: react-bump 0.35s ease-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  .react-float {
+    display: none;
+  }
+  .react-bump {
+    animation: none;
+  }
+}
+
+/* Story mode: the current slide's bar fills over its time on screen. */
+.story-progress {
+  animation: featured-progress linear both;
+}
+
+/* Event Connect hero: the dots (people) gently pulse. */
+@keyframes constellation-pulse {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.8);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .constellation-dot {
+    animation: constellation-pulse 4.5s ease-in-out infinite;
+  }
+}
